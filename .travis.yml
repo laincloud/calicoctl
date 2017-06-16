@@ -1,0 +1,30 @@
+sudo: false
+language: go
+go:
+- 1.8.x
+install:
+- go get github.com/Masterminds/glide
+before_script:
+- glide install
+script:
+- mv $GOPATH/src/github.com/laincloud $GOPATH/src/github.com/projectcalico
+- go build -o bin/allocate-ipip-addr calico_node/allocateipip/allocate_ipip_addr.go
+- go build -o bin/calicoctl calicoctl/calicoctl.go
+- go build -o bin/startup calico_node/startup/startup.go
+after_success:
+- xz -9k bin/allocate-ipip-addr
+- xz -9k bin/calicoctl
+- xz -9k bin/startup
+deploy:
+  provider: releases
+  api_key:
+    secure: Ug3W2eRO6l+H8ixz6v7/Ey2GYieCA10LU5mWgjKYLL8H96I9etBLKT5zMzgXcj0TL8BOqUxkY0NcJcgWqv3Xsck2/+U+O/icMOPxqwC6eX7jWJ2fXw6ahXVEmmmp4mPybmUDbylb2netWcmwa2gCDpddsGQ4eXJ2PLOh6wMxhGbOwkfhXvAgdmgQrrPThfHzaNUo7ocOix2eqq+ZHnmjQe+UfL2D4ugxPlYEAWMpfLMnr77zWRfeOcRaRBK55t5cj5FDMJ0xumYlys24lOATHWo5UnrGkWRjDAu+qstfxselH4pBBXSBrXIVZbTUtxQD/NMueXiibj0VJJlVkh8Xw5EdwtIYaDeG8Y3sRsnu3eS+FQfqe37Vg+2zqfGaQoJiFRpB5G4ubaftxhffGvz1aUPfXLdjULi8rPaiEs3P2WhIWFnT8AysSibQktR2ROXxGxDD6AGp6V3sVa0XDoQmOF0zqQjug0Vg/D4agAa5LtF1IH8kW5dq/mXShJpCRO3Ja5FurUdsl5JmCH7Evn0WX9my6sZIht0AkfWRSgHeayR2X2Fo1OT+u59VJ4zpqvFpwRnOYrHQ0S6fNSKY91/VA73JR/cv0g0NUhcmiLaZ5RbhO2ICYDDx/qmOgofYydZaRaL0eVv+hD94qvI21T68zRjbDGYJSEYp+gXhM+3GMJ8=
+  file:
+  - bin/allocate-ipip-addr
+  - bin/calicoctl
+  - bin/startup
+  - bin/allocate-ipip-addr.xz
+  - bin/calicoctl.xz
+  - bin/startup.xz
+  on:
+    tags: true

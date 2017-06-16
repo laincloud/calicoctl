@@ -8,11 +8,8 @@ import (
 	"github.com/projectcalico/libcalico-go/lib/client"
 )
 
-// CreateClient loads the client config from environments and creates the
-// Calico client.
-func CreateClient() (*api.CalicoAPIConfig, *client.Client) {
-	// Load the client config from environment.
-	cfg, err := client.LoadClientConfig("")
+func CreateClient(filename string) (*api.CalicoAPIConfig, *client.Client) {
+	cfg, err := client.LoadClientConfig(filename)
 	if err != nil {
 		fmt.Printf("ERROR: Error loading datastore config: %s", err)
 		os.Exit(1)

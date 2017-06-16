@@ -56,7 +56,7 @@ func main() {
 	nodeName := determineNodeName()
 
 	// Create the Calico API client.
-	cfg, client := calicoclient.CreateClient()
+	cfg, client := calicoclient.CreateClient("/etc/calico/calicoctl.cfg")
 
 	// An explicit value of true is required to wait for the datastore.
 	if os.Getenv("WAIT_FOR_DATASTORE") == "true" {
@@ -89,7 +89,7 @@ func main() {
 	}
 
 	// Configure IP Pool configuration.
-	configureIPPools(client)
+	//configureIPPools(client)
 
 	// Set other Felix config that is not yet in the node resource.  Skip for Kubernetes as
 	// the keys do not yet exist
@@ -102,7 +102,7 @@ func main() {
 
 	// Write the startup.env file now that we are ready to start other
 	// components.
-	writeStartupEnv(nodeName, node.Spec.BGP.IPv4Address, node.Spec.BGP.IPv6Address)
+	//writeStartupEnv(nodeName, node.Spec.BGP.IPv4Address, node.Spec.BGP.IPv6Address)
 
 	// Tell the user what the name of the node is.
 	message("Using node name: %s", nodeName)

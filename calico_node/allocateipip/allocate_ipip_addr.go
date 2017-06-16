@@ -17,20 +17,17 @@ import (
 // that is configured.
 
 func main() {
-	// Load the client config from environment.
-	cfg, c := calicoclient.CreateClient()
+	cfg, c := calicoclient.CreateClient("/etc/calico/calicoctl.cfg")
 
 	// This is a no-op for KDD.
 	if cfg.Spec.DatastoreType == api.Kubernetes {
 		log.Info("Kubernetes datastore driver handles IPIP allocation - no op")
 		return
 	}
-
-	// The allocate_ipip_addr binary is only ever invoked _after_ the
-	// startup binary has been invoked and the modified environments have
-	// been sourced.  Therefore, the NODENAME environment will always be
-	// set at this point.
-	nodename := os.Getenv("NODENAME")
+	nodename, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
 	if nodename == "" {
 		log.Panic("NODENAME environment is not set")
 	}
