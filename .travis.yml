@@ -4,6 +4,7 @@ go:
 - 1.8.x
 install:
 - go get github.com/Masterminds/glide
+- go get github.com/aliyun/ossutil
 before_script:
 - glide install
 script:
@@ -15,6 +16,11 @@ after_success:
 - xz -9k bin/allocate-ipip-addr
 - xz -9k bin/calicoctl
 - xz -9k bin/startup
+- if [ "$TRAVIS_TAG" != "" ]; then
+  ossutil cp bin/allocate-ipip-addr.xz oss://lain/binary/calicoctl/releases/download/${TRAVIS_TAG}/allocate-ipip-addr.xz -e ${ALIYUN_OSS_ENDPOINT} -i ${ALIYUN_OSS_ACCESS_KEY_ID} -k ${ALIYUN_OSS_ACCESS_KEY_SECRET};
+  ossutil cp bin/calicoctl.xz oss://lain/binary/calicoctl/releases/download/${TRAVIS_TAG}/calicoctl.xz -e ${ALIYUN_OSS_ENDPOINT} -i ${ALIYUN_OSS_ACCESS_KEY_ID} -k ${ALIYUN_OSS_ACCESS_KEY_SECRET};
+  ossutil cp bin/startup.xz oss://lain/binary/calicoctl/releases/download/${TRAVIS_TAG}/startup.xz -e ${ALIYUN_OSS_ENDPOINT} -i ${ALIYUN_OSS_ACCESS_KEY_ID} -k ${ALIYUN_OSS_ACCESS_KEY_SECRET};
+  fi
 deploy:
   provider: releases
   api_key:
